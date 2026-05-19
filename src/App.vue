@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from "vue";
+
 const bars = [
   44, 48, 55, 61, 66, 71, 76, 82, 88, 94, 101, 108, 116, 126, 137, 149, 160,
   169, 181, 193, 207, 220, 205, 192, 179, 168, 158, 150, 142, 135, 128, 122,
@@ -7,23 +9,23 @@ const bars = [
 
 const capabilities = [
   {
-    title: "Track",
-    copy: "Emissions, energy, and waste across your value chain",
+    title: "Артем Никандров",
+    copy: "Сайт-визитка ecom специалиста с предоставляемыми услугами",
     index: "001",
   },
   {
-    title: "Model",
-    copy: "Forecast performance and goal alignment",
+    title: "Неликвиды",
+    copy: "Маркетплейс для реализации списанных товаров",
     index: "002",
   },
   {
-    title: "Report",
-    copy: "Generate ESG disclosures, automate frameworks",
+    title: "Anasti",
+    copy: "Платформа автоматизированного анализа и визуализации данных",
     index: "003",
   },
   {
-    title: "Act",
-    copy: "Surface insights and operational next steps",
+    title: "Мотивация студентов",
+    copy: "Интеграция балльной экономики в учебный процесс",
     index: "004",
   },
 ];
@@ -31,123 +33,129 @@ const capabilities = [
 const principles = [
   {
     icon: "cross",
-    title: "Clarity drives action",
-    copy: "We believe better decisions start with better data-measured, visible, and trusted.",
+    title: "Практика и архитектура",
+    copy: "Мы разрабатываем сложные цифровые системы с нуля, без шаблонов и CMS, опираясь на практический опыт и учитывая задачи и рост клиента",
   },
   {
     icon: "globe",
-    title: "Sustainability is a systems problem",
-    copy: "We build tools that help teams connect the dots between operations, impact, and accountability.",
+    title: "Индивидуальный подход",
+    copy: "Мы обеспечиваем индивидуальный подход на всех этапах — от аналитики до поддержки, оставаясь на связи, прозрачно ведя процесс и учитывая обратную связь",
   },
   {
     icon: "arrow",
-    title: "Progress over perfection",
-    copy: "We support real-world momentum-helping organizations move from ambition to measurable change.",
+    title: "Долгосрочный результат",
+    copy: "Наша цель — не просто выполнить проект, а создать инструмент, который будет эффективно работать в долгосрочной перспективе и масштабироваться вместе с бизнесом",
   },
 ];
 
-const articles = [
+const aboutParagraphs = [
+  "Мы — молодое, амбициозное AI-first агентство, специализирующееся на разработке сайтов и цифровых продуктов под ключ. Мы объединяем современные технологии, дизайн и аналитику, чтобы создавать не просто сайты, а полноценные инструменты для роста бизнеса. Наша команда состоит из экспертов в области аналитики, проектирования, разработки и поддержки высоконагруженных сервисов для различных сфер бизнеса. Мы помогаем клиентам создавать сильное цифровое присутствие, формировать узнаваемый бренд и выстраивать эффективную коммуникацию с аудиторией. Мы не просто реализуем идеи — мы погружаемся в задачи бизнеса, находим оптимальные решения и создаем продукты, которые работают на результат: привлекают, удерживают и конвертируют.",
+];
+
+const services = [
   {
-    title: "How to Build a Climate-ready Data Stack",
-    meta: "Insights · 4 min",
-    image: "fabric",
+    title: "Сайт-визитка",
+    description:
+      "Компактный, но выразительный сайт, который помогает быстро презентовать компанию, услугу или личный бренд. В результате клиент получает продуманную структуру, сильный визуальный образ, адаптивную верстку, формы заявок, базовую SEO-подготовку и удобный инструмент для первого контакта с аудиторией.",
   },
   {
-    title: "Sustainability Isn't a Side Project: Making Impact Operational",
-    meta: "Strategy · 7 min",
-    image: "forest",
+    title: "Маркетплейс",
+    description:
+      "Полноценная торговая платформа для работы с большим количеством товаров, продавцов и пользователей. Итоговый продукт включает масштабируемый каталог, фильтрацию, поиск, личные кабинеты, корзину, оплату, управление заказами, административную панель и архитектуру, готовую к росту нагрузки и развитию бизнес-логики.",
   },
   {
-    title: "Inside the Aetherfield Model: How We Turn Data Into Action",
-    meta: "Insights · 5 min",
-    image: "wind",
+    title: "Мобильное приложение",
+    description:
+      "Мобильный продукт с удобным пользовательским сценарием, быстрым интерфейсом и надежной технической основой. В результате вы получаете приложение с продуманным UX, интеграцией с серверной частью, push-уведомлениями, авторизацией, аналитикой и возможностью масштабировать функциональность по мере роста бизнеса.",
+  },
+  {
+    title: "Личный кабинет / CRM-система",
+    description:
+      "Система для автоматизации внутренних процессов и управления клиентскими данными в одном цифровом контуре. Итоговый продукт может включать роли и права доступа, воронки, карточки клиентов, отчеты, задачи, уведомления, аналитику и интеграции с внешними сервисами, чтобы команда работала быстрее и прозрачнее.",
+  },
+  {
+    title: "Сайт под узконаправленные задачи",
+    description:
+      "Индивидуальное веб-решение под конкретный бизнес-сценарий, где важна не шаблонная подача, а точное попадание в задачу. Это может быть сервис, калькулятор, внутренняя платформа, витрина, конфигуратор или специализированный инструмент с уникальной логикой, разработанный с учетом процессов компании и будущего масштабирования.",
   },
 ];
+
+const openedService = ref<number | null>(null);
+const openedPrinciple = ref<number | null>(null);
+const selectedProjectType = ref("");
+
+const toggleService = (index: number) => {
+  openedService.value = openedService.value === index ? null : index;
+};
+
+const togglePrinciple = (index: number) => {
+  openedPrinciple.value = openedPrinciple.value === index ? null : index;
+};
 </script>
 
 <template>
   <main class="site-shell">
     <section class="hero-band">
       <header class="topbar" aria-label="Primary navigation">
-        <a class="brand" href="#">Aetherfield</a>
+        <a class="brand" href="#">Jorwell</a>
         <nav class="desktop-nav" aria-label="Main navigation">
-          <a href="#product">Product</a>
-          <a href="#journal">Journal</a>
-          <a href="#about">About</a>
-          <a href="#careers">Careers</a>
-          <a href="#start">Get started -></a>
+          <a href="#about">О нас</a>
+          <a href="#product">Кейсы</a>
+          <a href="#services">Услуги</a>
+          <a href="#start">Оставить заявку</a>
         </nav>
       </header>
 
       <div class="hero-copy">
         <h1>
-          <span>Sustainability insights,</span>
-          <span>built for business</span>
+          <span>Расскажите о себе</span>
+          <span>просто и понятно</span>
         </h1>
-        <p>
-          Track impact, reduce emissions, and accelerate progress-with clarity
-          and confidence.
-        </p>
+        <p>Создаем цифровые продукты, которые работают на рост бизнеса</p>
         <div class="hero-actions" aria-label="Primary actions">
-          <a class="button" href="#start">· Request a demo</a>
-          <a class="button" href="#product">· Explore the platform</a>
+          <a class="button" href="#start">Оставить заявку</a>
         </div>
       </div>
+    </section>
 
-      <section class="dashboard" aria-label="Aetherfield dashboard preview">
-        <div class="dashboard-title">
-          <h2>Good morning, Acme Inc</h2>
-          <p>Your daily impact metrics are ready to review.</p>
-        </div>
-
-        <div class="metrics">
-          <article class="metric-card metric-card--wide">
-            <span>192,000 tCO₂e</span>
-            <strong>56%</strong>
-          </article>
-          <article class="metric-card">
-            <span>Energy consumption</span>
-            <i aria-hidden="true"></i>
-            <strong>583.7 <small>MWh</small></strong>
-            <em>↓12.4%</em>
-          </article>
-          <article class="metric-card forecast-card">
-            <div class="mini-image mini-image--forest"></div>
-            <div>
-              <span>Forecast</span>
-              <strong>You're 16% off your 2027 emissions goal</strong>
-            </div>
-          </article>
-        </div>
-
-        <div class="chart-panel">
-          <span>Carbon emissions trend</span>
-          <div class="chart-grid">
-            <b>240</b>
-            <b>160</b>
-            <b>80</b>
-            <b>0</b>
-            <div class="chart-bars">
-              <i
-                v-for="(bar, index) in bars"
-                :key="`${bar}-${index}`"
-                :style="{ height: `${bar}px` }"
-              ></i>
-            </div>
-          </div>
-          <div class="chart-months" aria-hidden="true">
-            <span>Feb</span>
-            <span>Mar</span>
-            <span>Apr</span>
-            <span>May</span>
-            <span>Jun</span>
-          </div>
-        </div>
-      </section>
+    <section id="about" class="clarity-section section-pad">
+      <h2>
+        <span>О нас</span>
+      </h2>
+      <div class="about-list">
+        <article
+          v-for="(principle, index) in principles"
+          :key="principle.title"
+          :class="{ 'service-item--open': openedPrinciple === index }"
+        >
+          <button
+            class="service-toggle"
+            type="button"
+            :aria-expanded="openedPrinciple === index"
+            :aria-controls="`principle-panel-${index}`"
+            @click="togglePrinciple(index)"
+          >
+            <h3>{{ principle.title }}</h3>
+            <span
+              class="service-plus"
+              :class="{ 'service-plus--open': openedPrinciple === index }"
+            >
+              +
+            </span>
+          </button>
+          <p
+            v-if="openedPrinciple === index"
+            :id="`principle-panel-${index}`"
+            class="service-description"
+          >
+            {{ principle.copy }}
+          </p>
+        </article>
+      </div>
     </section>
 
     <section id="product" class="measure-section section-pad">
-      <h2>Everything you need to measure, model, and act on sustainability</h2>
+      <h2>Наши кейсы</h2>
       <div class="measure-grid">
         <div class="image-panel image-panel--fabric">
           <article class="floating-metric">
@@ -165,99 +173,115 @@ const articles = [
             </div>
             <span>{{ capability.index }}</span>
           </article>
-          <a class="button" href="#features">· Explore features</a>
         </div>
       </div>
     </section>
 
-    <section id="about" class="clarity-section section-pad">
-      <h2>
-        <span>Built for clarity</span>
-        <span>Designed for action</span>
-      </h2>
-      <div class="principle-grid">
-        <article v-for="principle in principles" :key="principle.title">
-          <span
-            class="principle-icon"
-            :class="`principle-icon--${principle.icon}`"
-          ></span>
-          <h3>{{ principle.title }}</h3>
-          <p>{{ principle.copy }}</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="case-section section-pad">
-      <div class="case-card">
-        <div class="image-panel image-panel--people"></div>
-        <div class="case-copy">
-          <h2>Why Acme Inc chose Aetherfield</h2>
-          <p>
-            With fragmented data and growing reporting pressure, Acme turned to
-            Aetherfield to streamline their ESG workflows. The result? Faster
-            decisions, fewer spreadsheets, and 34% more coverage.
-          </p>
-          <a class="button" href="#case">Read case study</a>
-        </div>
-      </div>
-    </section>
-
-    <section id="journal" class="journal-section section-pad">
-      <div class="journal-stamp" aria-hidden="true">
-        <span>earth</span>
-        <strong>Aetherfield<br />Journal</strong>
-        <span>data</span>
-        <small>tech</small>
-      </div>
+    <section id="services" class="journal-section section-pad">
       <div class="journal-list">
-        <h2>From the journal</h2>
-        <article v-for="article in articles" :key="article.title">
-          <div
-            class="article-image"
-            :class="`article-image--${article.image}`"
-          ></div>
-          <div>
-            <h3>{{ article.title }}</h3>
-            <p>{{ article.meta }}</p>
-          </div>
+        <h2>Наши услуги</h2>
+        <article
+          v-for="(service, index) in services"
+          :key="service.title"
+          :class="{ 'service-item--open': openedService === index }"
+        >
+          <button
+            class="service-toggle"
+            type="button"
+            :aria-expanded="openedService === index"
+            :aria-controls="`service-panel-${index}`"
+            @click="toggleService(index)"
+          >
+            <h3>{{ service.title }}</h3>
+            <span
+              class="service-plus"
+              :class="{ 'service-plus--open': openedService === index }"
+            >
+              +
+            </span>
+          </button>
+          <p
+            v-if="openedService === index"
+            :id="`service-panel-${index}`"
+            class="service-description"
+          >
+            {{ service.description }}
+          </p>
         </article>
-        <a class="button" href="#all">View all articles</a>
       </div>
-    </section>
-
-    <section class="quote-section section-pad">
-      <div class="portrait-panel"></div>
-      <blockquote>
-        <span aria-hidden="true">“</span>
-        <p>
-          We finally moved past spreadsheets and guesswork. Now we have real
-          data to guide real decisions.
-        </p>
-        <footer>
-          <strong>Elliot Williams</strong>
-          <span>Head of Sustainability, Flux Materials</span>
-        </footer>
-      </blockquote>
     </section>
 
     <section id="start" class="cta-section section-pad">
-      <h2>Ready to operationalize your sustainability goals?</h2>
-      <a class="button" href="#demo">· Request a demo</a>
+      <h2>Уже решили, чего хотите?</h2>
+      <form class="request-form">
+        <label class="request-field">
+          <span>Как к Вам обращаться?</span>
+          <input type="text" name="name" placeholder="Введите имя" />
+        </label>
+        <label class="request-field">
+          <span>Почта</span>
+          <input type="email" name="email" placeholder="example@mail.com" />
+        </label>
+        <label class="request-field">
+          <span>Тип проекта</span>
+          <select
+            v-model="selectedProjectType"
+            class="request-select"
+            name="projectType"
+            required
+          >
+            <option value="" disabled>Выберите тип проекта</option>
+            <option
+              v-for="service in services"
+              :key="service.title"
+              :value="service.title"
+            >
+              {{ service.title }}
+            </option>
+            <option value="Другое">Другое</option>
+          </select>
+        </label>
+        <label v-if="selectedProjectType === 'Другое'" class="request-field">
+          <span>Свой тип проекта</span>
+          <input
+            type="text"
+            name="customProjectType"
+            placeholder="Укажите тип проекта"
+          />
+        </label>
+        <label class="request-field request-field--full">
+          <span>Как нам связаться с Вами?</span>
+          <input
+            type="text"
+            name="contactPreference"
+            placeholder="Оставьте ссылку на Ваш Telegram/Max"
+          />
+        </label>
+        <label class="request-field request-field--full">
+          <span>Описание идеи</span>
+          <textarea
+            name="idea"
+            rows="6"
+            placeholder="Кратко опишите задачу, цель проекта и ваши ожидания"
+          ></textarea>
+        </label>
+        <button class="button request-submit" type="submit">
+          Отправить заявку
+        </button>
+      </form>
     </section>
 
     <footer class="footer-band">
       <div class="footer-nav">
         <nav aria-label="Footer navigation">
-          <a href="#product">Product</a>
-          <a href="#journal">Journal</a>
-          <a href="#about">About</a>
-          <a href="#careers">Careers</a>
-          <a href="#start">Get started</a>
+          <a href="#about">О нас</a>
+          <a href="#product">Кейсы</a>
+          <a href="#services">Услуги</a>
+          <a href="#start">Оставить заявку</a>
         </nav>
-        <span>© 2025 · All rights reserved</span>
       </div>
       <div class="footer-image" aria-hidden="true"></div>
-      <strong>Aetherfield</strong>
+      <strong>JORWELL</strong>
     </footer>
   </main>
 </template>
@@ -296,14 +320,13 @@ const articles = [
 }
 
 .hero-band {
-  min-height: 1080px;
-  padding: 22px 32px 96px;
+  padding: 22px 32px 56px;
   background:
     linear-gradient(
       180deg,
       rgba(190, 220, 247, 0.95) 0%,
-      rgba(231, 241, 244, 0.95) 63%,
-      #fbf2dc 100%
+      rgba(231, 241, 244, 0.95) 52%,
+      #fbf2dc 78%
     ),
     #c7e3fb;
 }
@@ -335,6 +358,8 @@ const articles = [
 
 .desktop-nav {
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 30px;
   font-size: 16px;
   font-weight: 700;
@@ -362,7 +387,7 @@ p {
 .hero-copy h1 span:first-child,
 .clarity-section h2 span:first-child {
   display: block;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Big Caslon", "Times New Roman", serif;
   font-weight: 400;
 }
 
@@ -374,7 +399,7 @@ p {
 
 .hero-copy p {
   margin-top: 26px;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Big Caslon", "Times New Roman", serif;
   font-size: 23px;
 }
 
@@ -389,6 +414,7 @@ p {
   align-items: center;
   justify-content: center;
   min-height: 48px;
+  max-width: 100%;
   padding: 0 22px;
   border: 0;
   border-radius: 0;
@@ -417,7 +443,7 @@ p {
 .dashboard-title p {
   margin-top: 4px;
   color: #6b6b6b;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Big Caslon", "Times New Roman", serif;
   font-size: 26px;
   line-height: 1;
 }
@@ -644,6 +670,7 @@ p {
 }
 
 .measure-grid {
+  --case-block-height: 500px;
   align-items: stretch;
   gap: 42px;
 }
@@ -672,7 +699,7 @@ p {
 .image-panel--fabric {
   position: relative;
   flex: 1 1 58%;
-  min-height: 500px;
+  min-height: var(--case-block-height);
 }
 
 .floating-metric {
@@ -688,15 +715,24 @@ p {
 }
 
 .capability-list {
+  display: flex;
   flex: 1 1 42%;
+  flex-direction: column;
+  min-height: var(--case-block-height);
 }
 
 .capability-list article {
   display: flex;
+  flex: 1 1 0;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
   padding: 25px 0;
   border-top: 1px solid #d8dde3;
+}
+
+.capability-list .button {
+  margin: 26px auto 0 0;
 }
 
 .capability-list article:last-of-type {
@@ -712,7 +748,7 @@ p {
 
 .capability-list p {
   margin-top: 16px;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Big Caslon", "Times New Roman", serif;
   font-size: 21px;
   line-height: 1.2;
 }
@@ -723,28 +759,9 @@ p {
   font-size: 14px;
 }
 
-.capability-list .button {
-  margin-top: 26px;
-}
-
 .clarity-section {
-  background:
-    radial-gradient(
-      ellipse at 20% 10%,
-      rgba(255, 255, 255, 0.95) 0 12%,
-      transparent 13%
-    ),
-    radial-gradient(
-      ellipse at 80% 82%,
-      rgba(255, 255, 255, 0.65) 0 16%,
-      transparent 17%
-    ),
-    repeating-radial-gradient(
-      circle at 45% 40%,
-      rgba(255, 255, 255, 0.7) 0 1px,
-      transparent 1px 4px
-    ),
-    #eee8d9;
+  margin-top: 28px;
+  background: #ffffff;
 }
 
 .clarity-section h2 {
@@ -753,17 +770,44 @@ p {
   text-align: center;
 }
 
-.principle-grid {
+.clarity-intro {
+  display: grid;
   gap: 18px;
-  margin-top: 56px;
+  max-width: 940px;
+  margin: 32px auto 0;
 }
 
-.principle-grid article {
-  flex: 1 1 0;
-  min-height: 210px;
-  padding: 32px;
-  border-radius: 8px;
-  background: #ffffff;
+.clarity-intro p {
+  margin: 0;
+  color: rgba(5, 5, 5, 0.78);
+  font-size: 1.02rem;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.clarity-subhead {
+  margin-top: 40px;
+  color: rgba(5, 5, 5, 0.72);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.about-list {
+  width: min(1120px, 100%);
+  margin: 56px auto 0;
+}
+
+.about-list article {
+  display: block;
+  padding: 28px 0;
+  border-top: 1px solid #d8dde3;
+}
+
+.about-list article:last-of-type {
+  border-bottom: 1px solid #d8dde3;
 }
 
 .principle-icon {
@@ -834,15 +878,10 @@ p {
   background: transparent;
 }
 
-.principle-grid h3 {
+.about-list h3 {
   font-size: 21px;
-}
-
-.principle-grid p {
-  margin-top: 12px;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 22px;
-  line-height: 1.2;
+  line-height: 1.1;
+  margin: 0;
 }
 
 .case-section {
@@ -893,7 +932,7 @@ p {
 
 .case-copy p {
   margin-top: 18px;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Big Caslon", "Times New Roman", serif;
   font-size: 22px;
   line-height: 1.25;
 }
@@ -904,65 +943,67 @@ p {
 
 .journal-section {
   justify-content: center;
-  gap: 58px;
   padding-top: 60px;
-}
-
-.journal-stamp {
-  position: relative;
-  width: 430px;
-  height: 160px;
-  margin-top: 44px;
-  border: 3px solid #2c87ff;
-  color: #2c87ff;
-  transform: skewY(-9deg) rotate(-5deg);
-}
-
-.journal-stamp strong {
-  position: absolute;
-  left: 135px;
-  top: 56px;
-  font-size: 28px;
-  line-height: 0.9;
-}
-
-.journal-stamp span,
-.journal-stamp small {
-  position: absolute;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 16px;
-}
-
-.journal-stamp span:first-child {
-  left: 185px;
-  top: 16px;
-}
-
-.journal-stamp span:nth-child(3) {
-  right: 22px;
-  top: 54px;
-}
-
-.journal-stamp small {
-  left: 28px;
-  bottom: 30px;
+  padding-bottom: 84px;
 }
 
 .journal-list {
-  width: min(660px, 100%);
+  width: min(1120px, 100%);
 }
 
 .journal-list h2 {
-  margin-bottom: 20px;
-  font-size: 40px;
+  margin-bottom: 28px;
+  font-size: 48px;
+}
+
+.clarity-section > h2,
+.measure-section > h2,
+.journal-list > h2,
+.cta-section > h2 {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.clarity-section > h2 span {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+.clarity-section > h2 span:first-child,
+.clarity-section > h2 span:last-child {
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif !important;
+  font-weight: 700 !important;
 }
 
 .journal-list article {
-  display: grid;
-  grid-template-columns: 176px 1fr;
-  gap: 18px;
-  align-items: center;
-  padding: 22px 0;
+  display: block;
+  padding: 28px 0;
   border-top: 1px solid #d8dde3;
 }
 
@@ -970,35 +1011,47 @@ p {
   border-bottom: 1px solid #d8dde3;
 }
 
-.article-image {
-  height: 76px;
+.service-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.article-image--wind {
-  background-image:
-    radial-gradient(
-      circle at 25% 56%,
-      rgba(4, 5, 5, 0.55) 0 9%,
-      transparent 10%
-    ),
-    linear-gradient(
-      120deg,
-      rgba(254, 183, 45, 0.9),
-      rgba(241, 87, 32, 0.75),
-      rgba(24, 28, 22, 0.85)
-    );
+.journal-list h3,
+.about-list h3 {
+  font-size: 28px;
+  line-height: 1.1;
+  margin: 0;
 }
 
-.journal-list h3 {
-  font-size: 21px;
-  line-height: 1.05;
+.service-plus {
+  flex: 0 0 auto;
+  margin-left: 24px;
+  font-size: 46px;
+  line-height: 1;
+  transition:
+    transform 180ms ease,
+    color 180ms ease;
 }
 
-.journal-list p {
-  margin-top: 8px;
+.service-plus--open {
+  color: #2c87ff;
+  transform: rotate(45deg);
+}
+
+.service-description {
+  max-width: 920px;
+  margin: 18px 72px 0 0;
   color: #5f5f5f;
-  font-family: "Courier New", monospace;
-  font-size: 15px;
+  font-size: 19px;
+  line-height: 1.75;
 }
 
 .journal-list .button {
@@ -1045,7 +1098,7 @@ blockquote {
 blockquote > span {
   display: block;
   color: #d8dde3;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Big Caslon", "Times New Roman", serif;
   font-size: 78px;
   line-height: 0.6;
 }
@@ -1072,7 +1125,7 @@ blockquote footer strong {
 blockquote footer span {
   margin-top: 8px;
   color: #6b6b6b;
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: "Big Caslon", "Times New Roman", serif;
   font-size: 21px;
 }
 
@@ -1082,12 +1135,90 @@ blockquote footer span {
 }
 
 .cta-section h2 {
+  margin: 0 auto 30px;
+  max-width: 760px;
   font-size: 41px;
   line-height: 1.1;
 }
 
-.cta-section .button {
-  margin-top: 28px;
+.request-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding: 34px;
+  border: 1px solid #dde3ea;
+  border-radius: 24px;
+  background: #ffffff;
+  text-align: left;
+}
+
+.request-field {
+  display: grid;
+  gap: 10px;
+}
+
+.request-field--full {
+  grid-column: 1 / -1;
+}
+
+.request-field span {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.request-field input,
+.request-field select,
+.request-field textarea {
+  width: 100%;
+  border: 1px solid #cfd6de;
+  border-radius: 16px;
+  background: #fbfcfe;
+  color: #050505;
+  font: inherit;
+}
+
+.request-field input,
+.request-field select {
+  min-height: 58px;
+  padding: 0 18px;
+}
+
+.request-select {
+  appearance: none;
+  padding-right: 52px;
+  background-image:
+    linear-gradient(45deg, transparent 50%, #050505 50%),
+    linear-gradient(135deg, #050505 50%, transparent 50%);
+  background-position:
+    calc(100% - 24px) calc(50% - 4px),
+    calc(100% - 18px) calc(50% - 4px);
+  background-size:
+    7px 7px,
+    7px 7px;
+  background-repeat: no-repeat;
+}
+
+.request-select:invalid {
+  color: #7c8794;
+}
+
+.request-field textarea {
+  padding: 16px 18px;
+  resize: vertical;
+}
+
+.request-field input::placeholder,
+.request-field textarea::placeholder {
+  color: #7c8794;
+}
+
+.request-submit {
+  justify-self: start;
+  margin-top: 8px;
 }
 
 .footer-band {
@@ -1107,11 +1238,15 @@ blockquote footer span {
   display: flex;
   flex-wrap: wrap;
   gap: 28px;
+  order: 2;
+  margin-left: auto;
   font-weight: 700;
+  justify-content: flex-end;
 }
 
 .footer-nav span {
-  font-family: Georgia, "Times New Roman", serif;
+  order: 1;
+  font-family: "Big Caslon", "Times New Roman", serif;
 }
 
 .footer-image {
@@ -1202,16 +1337,25 @@ blockquote footer span {
     font-size: 49px;
   }
 
+  .clarity-section {
+    margin-top: 24px;
+  }
+
   .journal-section {
     align-items: center;
   }
 
-  .journal-stamp {
-    width: 340px;
-  }
-
   .quote-section {
     gap: 36px;
+  }
+
+  .request-form {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .request-field--full {
+    grid-column: auto;
   }
 
   .portrait-panel {
@@ -1225,40 +1369,46 @@ blockquote footer span {
   }
 
   .footer-band > strong {
-    font-size: 106px;
+    font-size: clamp(72px, 14vw, 106px);
   }
 }
 
 @media (max-width: 560px) {
+  .hero-band {
+    padding: 18px 16px 48px;
+  }
+
   .topbar {
-    align-items: flex-start;
+    align-items: center;
+    gap: 18px;
   }
 
   .brand {
-    font-size: 13px;
+    flex: 0 0 auto;
+    font-size: 20px;
   }
 
   .desktop-nav {
-    gap: 8px;
-    font-size: 9px;
-  }
-
-  .desktop-nav a:nth-child(-n + 4) {
-    display: none;
+    flex: 1 1 180px;
+    gap: 10px 14px;
+    font-size: 12px;
+    line-height: 1.15;
   }
 
   .hero-copy {
-    margin-top: 34px;
+    margin-top: 66px;
   }
 
   .hero-copy h1 {
-    font-size: 30px;
+    font-size: 38px;
+    line-height: 1;
   }
 
   .hero-copy p {
-    max-width: 290px;
-    margin: 12px auto 0;
-    font-size: 10px;
+    max-width: 320px;
+    margin: 18px auto 0;
+    font-size: 16px;
+    line-height: 1.35;
   }
 
   .hero-actions {
@@ -1269,9 +1419,9 @@ blockquote footer span {
   }
 
   .button {
-    min-height: 34px;
-    padding: 0 16px;
-    font-size: 11px;
+    min-height: 44px;
+    padding: 0 18px;
+    font-size: 13px;
   }
 
   .dashboard {
@@ -1360,36 +1510,51 @@ blockquote footer span {
   }
 
   .section-pad {
-    padding: 54px 18px;
+    padding: 58px 16px;
   }
 
-  .measure-section h2 {
-    font-size: 23px;
+  .clarity-section > h2,
+  .measure-section > h2,
+  .journal-list > h2,
+  .cta-section > h2 {
+    font-size: 32px;
+    line-height: 1.14;
   }
 
   .image-panel--fabric {
-    min-height: 260px;
+    min-height: 280px;
+  }
+
+  .capability-list {
+    min-height: 0;
+  }
+
+  .capability-list article {
+    flex: 0 1 auto;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 22px 0;
   }
 
   .floating-metric {
-    bottom: 18%;
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    width: auto;
     min-height: 96px;
   }
 
   .capability-list h3,
   .case-copy h2,
   .journal-list h2 {
-    font-size: 19px;
+    font-size: 24px;
   }
 
   .capability-list p,
   .principle-grid p,
   .case-copy p {
-    font-size: 16px;
-  }
-
-  .clarity-section h2 {
-    font-size: 35px;
+    font-size: 17px;
+    line-height: 1.35;
   }
 
   .principle-grid article {
@@ -1413,31 +1578,48 @@ blockquote footer span {
     min-height: 180px;
   }
 
-  .journal-stamp {
-    width: 260px;
-    height: 118px;
+  .journal-list h3,
+  .about-list h3 {
+    font-size: 21px;
+    line-height: 1.18;
   }
 
-  .journal-stamp strong {
-    left: 82px;
-    top: 42px;
-    font-size: 23px;
+  .service-plus {
+    margin-left: 16px;
+    font-size: 34px;
   }
 
-  .journal-list article {
-    grid-template-columns: 105px 1fr;
+  .service-description {
+    margin: 14px 0 0;
+    font-size: 15px;
+    line-height: 1.6;
   }
 
-  .article-image {
-    height: 58px;
+  .request-form {
+    gap: 16px;
+    padding: 16px;
+    border-radius: 16px;
   }
 
-  .journal-list h3 {
-    font-size: 14px;
-  }
-
-  .journal-list p {
+  .request-field span {
     font-size: 11px;
+    line-height: 1.35;
+  }
+
+  .request-field input,
+  .request-field select {
+    min-height: 50px;
+    padding: 0 14px;
+    font-size: 16px;
+  }
+
+  .request-field textarea {
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .request-submit {
+    justify-self: stretch;
   }
 
   .portrait-panel {
@@ -1452,11 +1634,13 @@ blockquote footer span {
   .footer-nav {
     align-items: flex-start;
     flex-direction: column;
-    font-size: 13px;
+    font-size: 15px;
   }
 
   .footer-nav nav {
-    gap: 14px;
+    justify-content: flex-start;
+    margin-left: 0;
+    gap: 12px 18px;
   }
 
   .footer-image {
@@ -1464,7 +1648,8 @@ blockquote footer span {
   }
 
   .footer-band > strong {
-    font-size: 58px;
+    font-size: clamp(48px, 18vw, 74px);
+    line-height: 0.86;
   }
 }
 </style>
