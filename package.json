@@ -4,7 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "start": "run-p start:*",
+    "start:client": "vite --host 0.0.0.0",
+    "start:server": "node server.mjs",
+    "dev": "run-p dev:*",
+    "dev:client": "vite",
+    "dev:server": "node server.mjs",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
@@ -15,6 +20,9 @@
     "format": "prettier --write --experimental-cli src/"
   },
   "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "nodemailer": "^7.0.5",
     "vue": "^3.5.31"
   },
   "devDependencies": {

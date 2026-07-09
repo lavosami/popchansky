@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 const bars = [
   44, 48, 55, 61, 66, 71, 76, 82, 88, 94, 101, 108, 116, 126, 137, 149, 160,
@@ -12,21 +12,73 @@ const capabilities = [
     title: "Артем Никандров",
     copy: "Сайт-визитка ecom специалиста с предоставляемыми услугами",
     index: "001",
+    accent: "Стратегия и упаковка личного бренда",
+    images: [
+      {
+        src: "/cases/artem-nikandrov/hero.jpeg",
+        alt: "Главный экран сайта Артема Никандрова",
+      },
+      {
+        src: "/cases/artem-nikandrov/about.jpeg",
+        alt: "Блок о себе на сайте Артема Никандрова",
+      },
+      {
+        src: "/cases/artem-nikandrov/approach.jpeg",
+        alt: "Блок подхода к работе на сайте Артема Никандрова",
+      },
+    ],
   },
   {
-    title: "Неликвиды",
-    copy: "Маркетплейс для реализации списанных товаров",
+    title: "ИИ-респонденты",
+    copy: "Платформа запуска синтетических респондентов и анализа ответов",
     index: "002",
+    accent: "AI-исследования, оркестрация сессий и аналитика ответов",
+    images: [
+      {
+        src: "/cases/ai-respondents/respondents-launch.png",
+        alt: "Экран запуска ИИ-респондентов с настройкой количества участников",
+      },
+      {
+        src: "/cases/ai-respondents/analytics-dashboard.png",
+        alt: "Экран аналитики ответов и распределения результатов в проекте ИИ-респонденты",
+      },
+    ],
   },
   {
     title: "Anasti",
     copy: "Платформа автоматизированного анализа и визуализации данных",
     index: "003",
+    accent: "Сложная аналитика и визуализация данных",
+    images: [
+      {
+        src: "/cases/anasti/control-surface.png",
+        alt: "Экран авторизации и импорта датасета в проекте Anasti",
+      },
+    ],
   },
   {
     title: "Мотивация студентов",
     copy: "Интеграция балльной экономики в учебный процесс",
     index: "004",
+    accent: "Telegram-продукт для вовлечения и поощрения студентов",
+    images: [
+      {
+        src: "/cases/motivation-students/analytics.png",
+        alt: "Экран аналитики и баланса в проекте Мотивация студентов",
+      },
+      {
+        src: "/cases/motivation-students/merch.png",
+        alt: "Экран мерча в проекте Мотивация студентов",
+      },
+      {
+        src: "/cases/motivation-students/create-event.png",
+        alt: "Экран FAQ в проекте Мотивация студентов",
+      },
+      {
+        src: "/cases/motivation-students/event-card.png",
+        alt: "Экран карточки события в проекте Мотивация студентов",
+      },
+    ],
   },
 ];
 
@@ -80,9 +132,24 @@ const services = [
   },
 ];
 
+type Capability = (typeof capabilities)[number];
+
 const openedService = ref<number | null>(null);
 const openedPrinciple = ref<number | null>(null);
+const activeCaseIndex = ref(3);
+const activeCaseImageIndex = ref(0);
 const selectedProjectType = ref("");
+const customProjectType = ref("");
+const name = ref("");
+const email = ref("");
+const contactPreference = ref("");
+const idea = ref("");
+const privacyConsent = ref(false);
+const formMessage = ref("");
+const isSubmitting = ref(false);
+const requestForm = ref<HTMLFormElement | null>(null);
+const recipientEmail = "paramonovjegor@yandex.ru";
+const companyInn = "344111595700";
 
 const toggleService = (index: number) => {
   openedService.value = openedService.value === index ? null : index;
@@ -90,6 +157,100 @@ const toggleService = (index: number) => {
 
 const togglePrinciple = (index: number) => {
   openedPrinciple.value = openedPrinciple.value === index ? null : index;
+};
+
+const setActiveCase = (index: number) => {
+  activeCaseIndex.value = index;
+  activeCaseImageIndex.value = 0;
+};
+
+const activeCase = computed<Capability>(() => {
+  return capabilities[activeCaseIndex.value] ?? capabilities[0]!;
+});
+
+const activeCaseImage = computed(() => {
+  return activeCase.value.images[activeCaseImageIndex.value] ?? null;
+});
+
+const showPrevCaseImage = () => {
+  if (!activeCase.value.images.length) {
+    return;
+  }
+
+  activeCaseImageIndex.value =
+    activeCaseImageIndex.value === 0
+      ? activeCase.value.images.length - 1
+      : activeCaseImageIndex.value - 1;
+};
+
+const showNextCaseImage = () => {
+  if (!activeCase.value.images.length) {
+    return;
+  }
+
+  activeCaseImageIndex.value =
+    activeCaseImageIndex.value === activeCase.value.images.length - 1
+      ? 0
+      : activeCaseImageIndex.value + 1;
+};
+
+const setActiveCaseImage = (index: number) => {
+  activeCaseImageIndex.value = index;
+};
+
+const handleRequestSubmit = async () => {
+  if (!requestForm.value?.reportValidity()) {
+    return;
+  }
+
+  const resolvedProjectType =
+    selectedProjectType.value === "Другое"
+      ? customProjectType.value.trim()
+      : selectedProjectType.value;
+
+  formMessage.value = "";
+  isSubmitting.value = true;
+
+  try {
+    const response = await fetch("/api/request", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name.value.trim(),
+        email: email.value.trim(),
+        projectType: resolvedProjectType,
+        contactPreference: contactPreference.value.trim(),
+        idea: idea.value.trim(),
+      }),
+    });
+
+    const data = (await response.json()) as { message?: string };
+
+    if (!response.ok) {
+      throw new Error(data.message || "Не удалось отправить заявку.");
+    }
+
+    formMessage.value =
+      data.message || "Заявка отправлена. Мы скоро свяжемся с вами.";
+
+    name.value = "";
+    email.value = "";
+    selectedProjectType.value = "";
+    customProjectType.value = "";
+    contactPreference.value = "";
+    idea.value = "";
+    privacyConsent.value = false;
+    requestForm.value?.reset();
+  } catch (error) {
+    formMessage.value =
+      error instanceof Error
+        ? error.message
+        : "Не удалось отправить заявку. Попробуйте еще раз.";
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 
@@ -102,6 +263,9 @@ const togglePrinciple = (index: number) => {
           <a href="#about">О нас</a>
           <a href="#product">Кейсы</a>
           <a href="#services">Услуги</a>
+          <a href="/privacy.html" target="_blank" rel="noreferrer">
+            Политика
+          </a>
           <a href="#start">Оставить заявку</a>
         </nav>
       </header>
@@ -157,22 +321,64 @@ const togglePrinciple = (index: number) => {
     <section id="product" class="measure-section section-pad">
       <h2>Наши кейсы</h2>
       <div class="measure-grid">
-        <div class="image-panel image-panel--fabric">
-          <article class="floating-metric">
-            <span>Energy consumption</span>
-            <i aria-hidden="true"></i>
-            <strong>583.7 <small>MWh</small></strong>
-            <em>↓12.4%</em>
-          </article>
+        <div class="case-preview">
+          <div v-if="activeCaseImage" class="case-slider">
+            <div class="case-slider-figure">
+              <img
+                class="case-slider-image"
+                :src="activeCaseImage.src"
+                :alt="activeCaseImage.alt"
+              />
+            </div>
+            <button
+              class="case-slider-arrow case-slider-arrow--prev"
+              type="button"
+              aria-label="Предыдущий экран проекта"
+              @click="showPrevCaseImage"
+            >
+              ←
+            </button>
+            <button
+              class="case-slider-arrow case-slider-arrow--next"
+              type="button"
+              aria-label="Следующий экран проекта"
+              @click="showNextCaseImage"
+            >
+              →
+            </button>
+            <div class="case-slider-dots" aria-label="Навигация по экранам проекта">
+              <button
+                v-for="(image, index) in activeCase.images"
+                :key="image.src"
+                class="case-slider-dot"
+                :class="{ 'case-slider-dot--active': activeCaseImageIndex === index }"
+                type="button"
+                :aria-label="`Показать экран ${index + 1}`"
+                @click="setActiveCaseImage(index)"
+              ></button>
+            </div>
+          </div>
+          <div v-else class="case-preview-placeholder">
+            <span>{{ activeCase.index }}</span>
+            <strong>{{ activeCase.title }}</strong>
+            <p>{{ activeCase.accent }}</p>
+          </div>
         </div>
         <div class="capability-list">
-          <article v-for="capability in capabilities" :key="capability.title">
+          <button
+            v-for="(capability, index) in capabilities"
+            :key="capability.title"
+            class="case-selector"
+            :class="{ 'case-selector--active': activeCaseIndex === index }"
+            type="button"
+            @click="setActiveCase(index)"
+          >
             <div>
               <h3>{{ capability.title }}</h3>
               <p>{{ capability.copy }}</p>
             </div>
             <span>{{ capability.index }}</span>
-          </article>
+          </button>
         </div>
       </div>
     </section>
@@ -213,14 +419,30 @@ const togglePrinciple = (index: number) => {
 
     <section id="start" class="cta-section section-pad">
       <h2>Уже решили, чего хотите?</h2>
-      <form class="request-form">
+      <form
+        ref="requestForm"
+        class="request-form"
+        @submit.prevent="handleRequestSubmit"
+      >
         <label class="request-field">
           <span>Как к Вам обращаться?</span>
-          <input type="text" name="name" placeholder="Введите имя" />
+          <input
+            v-model.trim="name"
+            type="text"
+            name="name"
+            placeholder="Введите имя"
+            required
+          />
         </label>
         <label class="request-field">
           <span>Почта</span>
-          <input type="email" name="email" placeholder="example@mail.com" />
+          <input
+            v-model.trim="email"
+            type="email"
+            name="email"
+            placeholder="example@mail.com"
+            required
+          />
         </label>
         <label class="request-field">
           <span>Тип проекта</span>
@@ -244,39 +466,74 @@ const togglePrinciple = (index: number) => {
         <label v-if="selectedProjectType === 'Другое'" class="request-field">
           <span>Свой тип проекта</span>
           <input
+            v-model.trim="customProjectType"
             type="text"
             name="customProjectType"
             placeholder="Укажите тип проекта"
+            required
           />
         </label>
         <label class="request-field request-field--full">
           <span>Как нам связаться с Вами?</span>
           <input
+            v-model.trim="contactPreference"
             type="text"
             name="contactPreference"
             placeholder="Оставьте ссылку на Ваш Telegram/Max"
+            required
           />
         </label>
         <label class="request-field request-field--full">
           <span>Описание идеи</span>
           <textarea
+            v-model.trim="idea"
             name="idea"
             rows="6"
             placeholder="Кратко опишите задачу, цель проекта и ваши ожидания"
+            required
           ></textarea>
         </label>
-        <button class="button request-submit" type="submit">
-          Отправить заявку
+        <button class="button request-submit" type="submit" :disabled="isSubmitting">
+          {{ isSubmitting ? "Отправляем..." : "Отправить заявку" }}
         </button>
+        <p class="request-helper request-field--full">
+          Заявка будет отправлена автоматически на {{ recipientEmail }}.
+        </p>
+        <label class="request-consent request-field--full">
+          <input
+            v-model="privacyConsent"
+            type="checkbox"
+            name="privacyConsent"
+            required
+          />
+          <span>
+            Я соглашаюсь на обработку персональных данных в соответствии с
+            <a href="/privacy.html" target="_blank" rel="noreferrer">
+              Политикой конфиденциальности
+            </a>.
+          </span>
+        </label>
+        <p v-if="formMessage" class="request-feedback request-field--full">
+          {{ formMessage }}
+        </p>
       </form>
     </section>
 
     <footer class="footer-band">
       <div class="footer-nav">
+        <div class="footer-meta">
+          <a class="footer-email" :href="`mailto:${recipientEmail}`">
+            {{ recipientEmail }}
+          </a>
+          <span class="footer-inn">ИНН {{ companyInn }}</span>
+        </div>
         <nav aria-label="Footer navigation">
           <a href="#about">О нас</a>
           <a href="#product">Кейсы</a>
           <a href="#services">Услуги</a>
+          <a href="/privacy.html" target="_blank" rel="noreferrer">
+            Политика конфиденциальности
+          </a>
           <a href="#start">Оставить заявку</a>
         </nav>
       </div>
@@ -696,22 +953,147 @@ p {
     );
 }
 
-.image-panel--fabric {
-  position: relative;
+.case-preview {
   flex: 1 1 58%;
   min-height: var(--case-block-height);
 }
 
-.floating-metric {
-  position: absolute;
-  right: 16%;
-  bottom: 22%;
-  width: min(490px, 72%);
-  min-height: 176px;
+.case-slider,
+.case-preview-placeholder {
+  height: 100%;
+  min-height: var(--case-block-height);
+  border-radius: 18px;
 }
 
-.floating-metric strong {
-  font-size: 42px;
+.case-slider {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(
+      130deg,
+      rgba(128, 203, 231, 0.22),
+      rgba(238, 249, 253, 0.48) 54%,
+      rgba(121, 191, 219, 0.26)
+    ),
+    #eaf2f7;
+}
+
+.case-slider-figure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 34px 88px 72px;
+}
+
+.case-slider-image {
+  width: min(270px, 100%);
+  max-height: 100%;
+  border-radius: 24px;
+  object-fit: contain;
+  object-position: center top;
+  display: block;
+  box-shadow: 0 22px 44px rgba(5, 24, 43, 0.22);
+}
+
+.case-slider-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(5, 5, 5, 0.74);
+  color: #ffffff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.case-slider-arrow--prev {
+  left: 18px;
+}
+
+.case-slider-arrow--next {
+  right: 18px;
+}
+
+.case-slider-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  gap: 8px;
+  transform: translateX(-50%);
+}
+
+.case-slider-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.45);
+  cursor: pointer;
+}
+
+.case-slider-dot--active {
+  background: #ffffff;
+}
+
+.case-preview-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 26px;
+  background:
+    radial-gradient(
+      ellipse at 45% 42%,
+      rgba(255, 242, 207, 0.55) 0 14%,
+      transparent 15%
+    ),
+    radial-gradient(
+      ellipse at 52% 50%,
+      rgba(205, 225, 231, 0.75) 0 34%,
+      transparent 35%
+    ),
+    linear-gradient(
+      130deg,
+      rgba(128, 203, 231, 0.7),
+      rgba(238, 249, 253, 0.85) 54%,
+      rgba(121, 191, 219, 0.8)
+    );
+}
+
+.case-preview-placeholder span {
+  color: #4e657d;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+}
+
+.case-preview-placeholder strong {
+  margin-top: 10px;
+  font-size: 34px;
+  line-height: 1.04;
+}
+
+.case-preview-placeholder p {
+  margin-top: 14px;
+  max-width: 420px;
+  color: rgba(5, 5, 5, 0.72);
+  font-family: "Big Caslon", "Times New Roman", serif;
+  font-size: 24px;
+  line-height: 1.2;
 }
 
 .capability-list {
@@ -721,22 +1103,36 @@ p {
   min-height: var(--case-block-height);
 }
 
-.capability-list article {
+.case-selector {
   display: flex;
   flex: 1 1 0;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
+  width: 100%;
   padding: 25px 0;
+  border: 0;
   border-top: 1px solid #d8dde3;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
 }
 
-.capability-list .button {
-  margin: 26px auto 0 0;
-}
-
-.capability-list article:last-of-type {
+.case-selector:last-of-type {
   border-bottom: 1px solid #d8dde3;
+}
+
+.case-selector--active {
+  color: #055bd9;
+  transform: translateX(6px);
+}
+
+.case-selector--active p {
+  color: rgba(5, 91, 217, 0.92);
 }
 
 .capability-list h3,
@@ -1221,6 +1617,49 @@ blockquote footer span {
   margin-top: 8px;
 }
 
+.request-submit:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.request-helper,
+.request-feedback {
+  margin: 0;
+  color: #5b6774;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.request-feedback {
+  color: #1d5fd1;
+}
+
+.request-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 4px;
+  color: #44505d;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.request-consent input {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+}
+
+.request-consent span {
+  display: block;
+}
+
+.request-consent a {
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
 .footer-band {
   padding: 24px 22px 0;
   background: #fff935;
@@ -1234,19 +1673,34 @@ blockquote footer span {
   font-size: 20px;
 }
 
+.footer-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.footer-email {
+  font-family: "Courier New", monospace;
+  font-size: 15px;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
+.footer-inn {
+  color: rgba(107, 107, 0, 0.82);
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+}
+
 .footer-nav nav {
   display: flex;
   flex-wrap: wrap;
   gap: 28px;
-  order: 2;
   margin-left: auto;
   font-weight: 700;
   justify-content: flex-end;
-}
-
-.footer-nav span {
-  order: 1;
-  font-family: "Big Caslon", "Times New Roman", serif;
 }
 
 .footer-image {
@@ -1324,13 +1778,12 @@ blockquote footer span {
     font-size: 30px;
   }
 
-  .image-panel--fabric {
+  .case-preview {
     min-height: 360px;
   }
 
-  .floating-metric {
-    right: 6%;
-    width: 88%;
+  .case-slider-figure {
+    padding: 26px 72px 72px;
   }
 
   .clarity-section h2 {
@@ -1521,27 +1974,35 @@ blockquote footer span {
     line-height: 1.14;
   }
 
-  .image-panel--fabric {
-    min-height: 280px;
-  }
-
   .capability-list {
     min-height: 0;
   }
 
-  .capability-list article {
+  .case-preview,
+  .case-slider,
+  .case-preview-placeholder {
+    min-height: 280px;
+  }
+
+  .case-slider-figure {
+    padding: 18px 54px 64px;
+  }
+
+  .case-slider-image {
+    width: min(220px, 100%);
+  }
+
+  .case-slider-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
+  .case-selector {
     flex: 0 1 auto;
     align-items: flex-start;
     gap: 16px;
     padding: 22px 0;
-  }
-
-  .floating-metric {
-    right: 16px;
-    bottom: 16px;
-    left: 16px;
-    width: auto;
-    min-height: 96px;
   }
 
   .capability-list h3,
@@ -1555,6 +2016,10 @@ blockquote footer span {
   .case-copy p {
     font-size: 17px;
     line-height: 1.35;
+  }
+
+  .case-slider-dots {
+    bottom: 16px;
   }
 
   .principle-grid article {
@@ -1622,6 +2087,17 @@ blockquote footer span {
     justify-self: stretch;
   }
 
+  .request-consent {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .request-helper,
+  .request-feedback {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
   .portrait-panel {
     min-height: 330px;
   }
@@ -1634,7 +2110,20 @@ blockquote footer span {
   .footer-nav {
     align-items: flex-start;
     flex-direction: column;
+    gap: 18px;
     font-size: 15px;
+  }
+
+  .footer-meta {
+    gap: 4px;
+  }
+
+  .footer-email {
+    font-size: 13px;
+  }
+
+  .footer-inn {
+    font-size: 12px;
   }
 
   .footer-nav nav {
