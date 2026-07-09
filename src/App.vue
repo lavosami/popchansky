@@ -33,6 +33,7 @@ const capabilities = [
     copy: "Платформа запуска синтетических респондентов и анализа ответов",
     index: "002",
     accent: "AI-исследования, оркестрация сессий и аналитика ответов",
+    imageLayout: "wide",
     images: [
       {
         src: "/cases/ai-respondents/respondents-launch.png",
@@ -170,6 +171,10 @@ const activeCase = computed<Capability>(() => {
 
 const activeCaseImage = computed(() => {
   return activeCase.value.images[activeCaseImageIndex.value] ?? null;
+});
+
+const isWideCaseImage = computed(() => {
+  return activeCase.value.imageLayout === "wide";
 });
 
 const showPrevCaseImage = () => {
@@ -322,10 +327,18 @@ const handleRequestSubmit = async () => {
       <h2>Наши кейсы</h2>
       <div class="measure-grid">
         <div class="case-preview">
-          <div v-if="activeCaseImage" class="case-slider">
-            <div class="case-slider-figure">
+          <div
+            v-if="activeCaseImage"
+            class="case-slider"
+            :class="{ 'case-slider--wide': isWideCaseImage }"
+          >
+            <div
+              class="case-slider-figure"
+              :class="{ 'case-slider-figure--wide': isWideCaseImage }"
+            >
               <img
                 class="case-slider-image"
+                :class="{ 'case-slider-image--wide': isWideCaseImage }"
                 :src="activeCaseImage.src"
                 :alt="activeCaseImage.alt"
               />
@@ -981,6 +994,17 @@ p {
     #eaf2f7;
 }
 
+.case-slider--wide {
+  background:
+    linear-gradient(
+      130deg,
+      rgba(128, 203, 231, 0.16),
+      rgba(238, 249, 253, 0.4) 54%,
+      rgba(121, 191, 219, 0.18)
+    ),
+    #edf3f6;
+}
+
 .case-slider-figure {
   display: flex;
   align-items: center;
@@ -988,6 +1012,10 @@ p {
   width: 100%;
   height: 100%;
   padding: 34px 88px 72px;
+}
+
+.case-slider-figure--wide {
+  padding: 24px 38px 72px;
 }
 
 .case-slider-image {
@@ -998,6 +1026,14 @@ p {
   object-position: center top;
   display: block;
   box-shadow: 0 22px 44px rgba(5, 24, 43, 0.22);
+}
+
+.case-slider-image--wide {
+  width: 100%;
+  max-width: 860px;
+  max-height: calc(100% - 4px);
+  border-radius: 18px;
+  object-position: center center;
 }
 
 .case-slider-arrow {
@@ -1786,6 +1822,10 @@ blockquote footer span {
     padding: 26px 72px 72px;
   }
 
+  .case-slider-figure--wide {
+    padding: 22px 28px 72px;
+  }
+
   .clarity-section h2 {
     font-size: 49px;
   }
@@ -1990,6 +2030,16 @@ blockquote footer span {
 
   .case-slider-image {
     width: min(220px, 100%);
+  }
+
+  .case-slider-figure--wide {
+    padding: 16px 18px 60px;
+  }
+
+  .case-slider-image--wide {
+    width: 100%;
+    max-width: none;
+    border-radius: 14px;
   }
 
   .case-slider-arrow {
