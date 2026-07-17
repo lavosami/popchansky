@@ -81,6 +81,26 @@ const capabilities = [
       },
     ],
   },
+  {
+    title: "Медиа-свадьба",
+    copy: "Промо-сайт краудфандинговой свадьбы с нативными интеграциями для брендов",
+    index: "005",
+    accent: "Имиджевый лендинг, спонсорские пакеты и вирусная подача события",
+    images: [
+      {
+        src: "/cases/media-wedding/promo.jpg",
+        alt: "Главный промо-экран сайта проекта Медиа-свадьба",
+      },
+      {
+        src: "/cases/media-wedding/hero.jpg",
+        alt: "Экран с форматами интеграции брендов в проекте Медиа-свадьба",
+      },
+      {
+        src: "/cases/media-wedding/progress.jpg",
+        alt: "Экран прогресса краудфандинга и преимуществ для спонсоров в проекте Медиа-свадьба",
+      },
+    ],
+  },
 ];
 
 const principles = [
@@ -151,6 +171,9 @@ const isSubmitting = ref(false);
 const requestForm = ref<HTMLFormElement | null>(null);
 const recipientEmail = "paramonovjegor@yandex.ru";
 const companyInn = "344111595700";
+const touchStartX = ref<number | null>(null);
+const touchCurrentX = ref<number | null>(null);
+const swipeThreshold = 42;
 
 const toggleService = (index: number) => {
   openedService.value = openedService.value === index ? null : index;
@@ -201,6 +224,48 @@ const showNextCaseImage = () => {
 
 const setActiveCaseImage = (index: number) => {
   activeCaseImageIndex.value = index;
+};
+
+const handleCaseTouchStart = (event: TouchEvent) => {
+  const touch = event.touches[0];
+
+  if (!touch) {
+    return;
+  }
+
+  touchStartX.value = touch.clientX;
+  touchCurrentX.value = touch.clientX;
+};
+
+const handleCaseTouchMove = (event: TouchEvent) => {
+  const touch = event.touches[0];
+
+  if (!touch || touchStartX.value === null) {
+    return;
+  }
+
+  touchCurrentX.value = touch.clientX;
+};
+
+const handleCaseTouchEnd = () => {
+  if (touchStartX.value === null || touchCurrentX.value === null) {
+    touchStartX.value = null;
+    touchCurrentX.value = null;
+    return;
+  }
+
+  const deltaX = touchCurrentX.value - touchStartX.value;
+
+  if (Math.abs(deltaX) >= swipeThreshold) {
+    if (deltaX < 0) {
+      showNextCaseImage();
+    } else {
+      showPrevCaseImage();
+    }
+  }
+
+  touchStartX.value = null;
+  touchCurrentX.value = null;
 };
 
 const handleRequestSubmit = async () => {
@@ -331,6 +396,10 @@ const handleRequestSubmit = async () => {
             v-if="activeCaseImage"
             class="case-slider"
             :class="{ 'case-slider--wide': isWideCaseImage }"
+            @touchstart.passive="handleCaseTouchStart"
+            @touchmove.passive="handleCaseTouchMove"
+            @touchend="handleCaseTouchEnd"
+            @touchcancel="handleCaseTouchEnd"
           >
             <div
               class="case-slider-figure"
@@ -493,7 +562,6 @@ const handleRequestSubmit = async () => {
             type="text"
             name="contactPreference"
             placeholder="Оставьте ссылку на Ваш Telegram/Max"
-            required
           />
         </label>
         <label class="request-field request-field--full">
@@ -984,6 +1052,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: pan-y;
   background:
     linear-gradient(
       130deg,
@@ -1765,6 +1834,36 @@ blockquote footer span {
   line-height: 0.75;
 }
 
+@media (max-width: 1180px) {
+  .hero-copy h1 {
+    font-size: clamp(56px, 8vw, 78px);
+  }
+
+  .section-pad {
+    padding: 96px 24px;
+  }
+
+  .measure-grid {
+    gap: 28px;
+  }
+
+  .case-slider-figure {
+    padding-inline: 72px;
+  }
+
+  .case-slider-figure--wide {
+    padding-inline: 28px;
+  }
+
+  .capability-list p {
+    font-size: 19px;
+  }
+
+  .footer-band > strong {
+    font-size: clamp(108px, 16vw, 174px);
+  }
+}
+
 @media (max-width: 900px) {
   .hero-band {
     min-height: 0;
@@ -1814,8 +1913,13 @@ blockquote footer span {
     font-size: 30px;
   }
 
+  .measure-grid {
+    --case-block-height: auto;
+    gap: 24px;
+  }
+
   .case-preview {
-    min-height: 360px;
+    min-height: 0;
   }
 
   .case-slider-figure {
@@ -1872,7 +1976,8 @@ blockquote footer span {
   }
 
   .topbar {
-    align-items: center;
+    align-items: flex-start;
+    flex-direction: column;
     gap: 18px;
   }
 
@@ -1882,8 +1987,9 @@ blockquote footer span {
   }
 
   .desktop-nav {
-    flex: 1 1 180px;
+    flex: none;
     gap: 10px 14px;
+    justify-content: flex-start;
     font-size: 12px;
     line-height: 1.15;
   }
@@ -2021,19 +2127,19 @@ blockquote footer span {
   .case-preview,
   .case-slider,
   .case-preview-placeholder {
-    min-height: 280px;
+    min-height: 260px;
   }
 
   .case-slider-figure {
-    padding: 18px 54px 64px;
+    padding: 18px 20px 64px;
   }
 
   .case-slider-image {
-    width: min(220px, 100%);
+    width: min(100%, 240px);
   }
 
   .case-slider-figure--wide {
-    padding: 16px 18px 60px;
+    padding: 16px 16px 60px;
   }
 
   .case-slider-image--wide {
@@ -2043,9 +2149,20 @@ blockquote footer span {
   }
 
   .case-slider-arrow {
-    width: 38px;
-    height: 38px;
-    font-size: 20px;
+    top: auto;
+    bottom: 14px;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    transform: none;
+  }
+
+  .case-slider-arrow--prev {
+    left: 14px;
+  }
+
+  .case-slider-arrow--next {
+    right: 14px;
   }
 
   .case-selector {
@@ -2070,6 +2187,9 @@ blockquote footer span {
 
   .case-slider-dots {
     bottom: 16px;
+    gap: 6px;
+    max-width: calc(100% - 112px);
+    flex-wrap: wrap;
   }
 
   .principle-grid article {

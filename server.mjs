@@ -40,7 +40,7 @@ app.post("/api/request", async (req, res) => {
     });
   }
 
-  if (!name || !email || !projectType || !contactPreference || !idea) {
+  if (!name || !email || !projectType || !idea) {
     return res.status(400).json({
       message: "Заполните все обязательные поля формы.",
     });
