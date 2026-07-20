@@ -157,7 +157,7 @@ type Capability = (typeof capabilities)[number];
 
 const openedService = ref<number | null>(null);
 const openedPrinciple = ref<number | null>(null);
-const activeCaseIndex = ref(3);
+const activeCaseIndex = ref(0);
 const activeCaseImageIndex = ref(0);
 const selectedProjectType = ref("");
 const customProjectType = ref("");
@@ -475,6 +475,13 @@ const handleRequestSubmit = async () => {
                 @click="setActiveCaseImage(index)"
               ></button>
             </div>
+            <p
+              v-if="activeCase.images.length > 1"
+              class="case-slider-hint"
+              aria-hidden="true"
+            >
+              Свайпайте, чтобы листать экраны
+            </p>
           </div>
           <div v-else class="case-preview-placeholder">
             <span>{{ activeCase.index }}</span>
@@ -788,6 +795,13 @@ const handleRequestSubmit = async () => {
   gap: 30px;
   font-size: 16px;
   font-weight: 700;
+}
+
+.desktop-nav a {
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
 }
 
 .hero-copy {
@@ -1241,6 +1255,22 @@ p {
 
 .case-slider-dot--active {
   background: #ffffff;
+}
+
+.case-slider-hint {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  z-index: 2;
+  display: none;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(5, 5, 5, 0.58);
+  color: #ffffff;
+  font-family: "Courier New", monospace;
+  font-size: 11px;
+  line-height: 1;
+  pointer-events: none;
 }
 
 .case-preview-placeholder {
@@ -1964,9 +1994,18 @@ blockquote footer span {
 }
 
 .cookie-banner__actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
   gap: 12px;
+  align-self: stretch;
+}
+
+.cookie-banner__button,
+.cookie-banner__button--secondary {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 22px;
+  cursor: pointer;
 }
 
 .cookie-banner__button {
@@ -1974,8 +2013,6 @@ blockquote footer span {
 }
 
 .cookie-banner__button--secondary {
-  min-height: 48px;
-  padding: 0 22px;
   border: 1px solid rgba(5, 5, 5, 0.16);
   background: transparent;
   color: #050505;
@@ -2025,9 +2062,31 @@ blockquote footer span {
     padding: 16px 18px 72px;
   }
 
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .brand {
+    text-align: center;
+  }
+
   .desktop-nav {
-    gap: 14px;
+    justify-content: center;
+    gap: 10px;
     font-size: 13px;
+  }
+
+  .desktop-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid rgba(5, 5, 5, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.56);
   }
 
   .hero-copy {
@@ -2303,6 +2362,10 @@ blockquote footer span {
     border-radius: 14px;
   }
 
+  .case-slider-hint {
+    display: inline-flex;
+  }
+
   .case-slider-arrow {
     top: auto;
     bottom: 14px;
@@ -2343,7 +2406,7 @@ blockquote footer span {
   .case-slider-dots {
     bottom: 16px;
     gap: 6px;
-    max-width: calc(100% - 112px);
+    max-width: calc(100% - 156px);
     flex-wrap: wrap;
   }
 
@@ -2490,11 +2553,28 @@ blockquote footer span {
 
   .cookie-banner__actions {
     width: 100%;
+    grid-template-columns: 1fr;
   }
 
   .cookie-banner__button,
   .cookie-banner__button--secondary {
     width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .desktop-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .desktop-nav a:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .case-slider {
+    touch-action: pan-y pinch-zoom;
   }
 }
 </style>
