@@ -166,6 +166,7 @@ const email = ref("");
 const contactPreference = ref("");
 const idea = ref("");
 const privacyConsent = ref(false);
+const personalDataConsent = ref(false);
 const formMessage = ref("");
 const isSubmitting = ref(false);
 const cookieConsentStatus = ref<"accepted" | "necessary" | null>(null);
@@ -343,6 +344,7 @@ const handleRequestSubmit = async () => {
     contactPreference.value = "";
     idea.value = "";
     privacyConsent.value = false;
+    personalDataConsent.value = false;
     requestForm.value?.reset();
   } catch (error) {
     formMessage.value =
@@ -622,9 +624,27 @@ const handleRequestSubmit = async () => {
             required
           />
           <span>
-            Я соглашаюсь на обработку персональных данных в соответствии с
+            Я подтверждаю, что ознакомился(ась) с
             <a href="/privacy.html" target="_blank" rel="noreferrer">
               Политикой конфиденциальности
+            </a>.
+          </span>
+        </label>
+        <label class="request-consent request-field--full">
+          <input
+            v-model="personalDataConsent"
+            type="checkbox"
+            name="personalDataConsent"
+            required
+          />
+          <span>
+            Я даю согласие на
+            <a
+              href="/personal-data-consent.html"
+              target="_blank"
+              rel="noreferrer"
+            >
+              обработку персональных данных
             </a>.
           </span>
         </label>

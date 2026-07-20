@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Согласие на обработку персональных данных | Jorwell</title>
+    <link rel="icon" href="/favicon.ico" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: #f5f7fb;
+        color: #050505;
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          sans-serif;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .consent-page {
+        min-height: 100vh;
+        padding: 28px 20px 72px;
+      }
+
+      .consent-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        width: min(1120px, 100%);
+        margin: 0 auto 40px;
+      }
+
+      .brand {
+        font-size: 24px;
+        font-weight: 800;
+        line-height: 1;
+        text-decoration: none;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 0 18px;
+        background: #050505;
+        color: #ffffff;
+        font-family: "Courier New", monospace;
+        font-size: 14px;
+        line-height: 1;
+        text-decoration: none;
+      }
+
+      .consent-shell {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+        padding: 36px clamp(18px, 4vw, 42px);
+        background: #ffffff;
+        border: 1px solid #dde3ea;
+        border-radius: 24px;
+      }
+
+      .consent-head {
+        max-width: 780px;
+        margin: 0 auto 38px;
+        text-align: center;
+      }
+
+      .consent-head h1 {
+        margin: 0;
+        font-size: clamp(34px, 5vw, 54px);
+        line-height: 1.04;
+      }
+
+      .consent-head p {
+        margin: 14px 0 0;
+        color: #677280;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .consent-card {
+        padding: 26px 0;
+        border-top: 1px solid #d8dde3;
+      }
+
+      .consent-card:last-child {
+        border-bottom: 1px solid #d8dde3;
+      }
+
+      .consent-card h2 {
+        margin: 0 0 16px;
+        font-size: clamp(22px, 3vw, 30px);
+        line-height: 1.14;
+      }
+
+      .consent-card p,
+      .consent-card li {
+        margin: 0;
+        color: #46515d;
+        font-size: 18px;
+        line-height: 1.75;
+      }
+
+      .consent-card p + p {
+        margin-top: 14px;
+      }
+
+      .consent-card ul {
+        margin: 18px 0 0;
+        padding-left: 24px;
+      }
+
+      .consent-card li + li {
+        margin-top: 8px;
+      }
+
+      @media (max-width: 640px) {
+        .consent-page {
+          padding: 16px 16px 48px;
+        }
+
+        .consent-topbar {
+          align-items: flex-start;
+          flex-direction: column;
+          margin-bottom: 24px;
+        }
+
+        .brand {
+          font-size: 20px;
+        }
+
+        .back-link {
+          min-height: 40px;
+          font-size: 13px;
+        }
+
+        .consent-shell {
+          padding: 22px 16px;
+          border-radius: 18px;
+        }
+
+        .consent-head {
+          margin-bottom: 26px;
+          text-align: left;
+        }
+
+        .consent-head p,
+        .consent-card p,
+        .consent-card li {
+          font-size: 15px;
+          line-height: 1.65;
+        }
+
+        .consent-card {
+          padding: 20px 0;
+        }
+
+        .consent-card ul {
+          padding-left: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="consent-page">
+      <header class="consent-topbar">
+        <a class="brand" href="/">Jorwell</a>
+        <a class="back-link" href="/">Вернуться на сайт</a>
+      </header>
+
+      <section class="consent-shell">
+        <div class="consent-head">
+          <h1>Согласие на обработку персональных данных</h1>
+          <p>Актуальная редакция от 20 июля 2026</p>
+        </div>
+
+        <article class="consent-card">
+          <h2>1. Общая формулировка согласия</h2>
+          <p>
+            Пользователь, заполняя форму на сайте Jorwell и проставляя отметку о
+            согласии, свободно, своей волей и в своем интересе выражает
+            согласие на обработку своих персональных данных оператором сайта.
+          </p>
+        </article>
+
+        <article class="consent-card">
+          <h2>2. Какие данные обрабатываются</h2>
+          <ul>
+            <li>имя;</li>
+            <li>адрес электронной почты;</li>
+            <li>тип проекта;</li>
+            <li>контакт для связи, включая ссылку на Telegram или Max;</li>
+            <li>описание идеи, задачи или проекта;</li>
+            <li>
+              технические сведения, которые могут быть необходимы для
+              корректного приема обращения и обеспечения работы сайта.
+            </li>
+          </ul>
+        </article>
+
+        <article class="consent-card">
+          <h2>3. Цели обработки</h2>
+          <ul>
+            <li>прием и обработка заявки пользователя;</li>
+            <li>связь по обращению и обсуждение проекта;</li>
+            <li>подготовка предложений, расчетов, договорных материалов;</li>
+            <li>обеспечение безопасности и стабильной работы сайта.</li>
+          </ul>
+        </article>
+
+        <article class="consent-card">
+          <h2>4. Действия с персональными данными</h2>
+          <p>
+            Согласие предоставляется на сбор, запись, систематизацию,
+            накопление, хранение, уточнение, использование, передачу в случаях,
+            предусмотренных законом, обезличивание, блокирование и удаление
+            персональных данных.
+          </p>
+        </article>
+
+        <article class="consent-card">
+          <h2>5. Срок действия согласия</h2>
+          <p>
+            Согласие действует до достижения целей обработки персональных
+            данных либо до момента его отзыва пользователем, если более
+            длительный срок хранения не требуется по закону или для защиты
+            законных интересов сторон.
+          </p>
+        </article>
+
+        <article class="consent-card">
+          <h2>6. Отзыв согласия</h2>
+          <p>
+            Пользователь вправе отозвать согласие на обработку персональных
+            данных, направив соответствующее обращение по контактным каналам,
+            используемым для взаимодействия по заявке.
+          </p>
+        </article>
+
+        <article class="consent-card">
+          <h2>7. Оператор</h2>
+          <p>
+            Оператором персональных данных в рамках настоящего согласия
+            выступает владелец сайта Jorwell.
+          </p>
+          <p>Публичный идентификатор оператора: ИНН 344111595700.</p>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
