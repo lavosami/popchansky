@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 
 const bars = [
   44, 48, 55, 61, 66, 71, 76, 82, 88, 94, 101, 108, 116, 126, 137, 149, 160,
@@ -168,12 +168,15 @@ const idea = ref("");
 const privacyConsent = ref(false);
 const formMessage = ref("");
 const isSubmitting = ref(false);
+const cookieConsentStatus = ref<"accepted" | "necessary" | null>(null);
 const requestForm = ref<HTMLFormElement | null>(null);
 const recipientEmail = "paramonovjegor@yandex.ru";
 const companyInn = "344111595700";
 const touchStartX = ref<number | null>(null);
 const touchCurrentX = ref<number | null>(null);
 const swipeThreshold = 42;
+const cookieConsentStorageKey = "jorwell-cookie-consent";
+const apiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 
 const toggleService = (index: number) => {
   openedService.value = openedService.value === index ? null : index;
@@ -268,6 +271,34 @@ const handleCaseTouchEnd = () => {
   touchCurrentX.value = null;
 };
 
+onMounted(() => {
+  const savedConsent = window.localStorage.getItem(cookieConsentStorageKey);
+
+  if (savedConsent === "accepted" || savedConsent === "necessary") {
+    cookieConsentStatus.value = savedConsent;
+  }
+});
+
+const setCookieConsent = (status: "accepted" | "necessary") => {
+  cookieConsentStatus.value = status;
+  window.localStorage.setItem(cookieConsentStorageKey, status);
+};
+
+const getRequestUrl = () => {
+  if (apiBaseUrl) {
+    return new URL("/api/request", apiBaseUrl).toString();
+  }
+
+  if (
+    window.location.protocol === "http:" ||
+    window.location.protocol === "https:"
+  ) {
+    return "/api/request";
+  }
+
+  return "http://127.0.0.1:3001/api/request";
+};
+
 const handleRequestSubmit = async () => {
   if (!requestForm.value?.reportValidity()) {
     return;
@@ -282,7 +313,7 @@ const handleRequestSubmit = async () => {
   isSubmitting.value = true;
 
   try {
-    const response = await fetch("/api/request", {
+    const response = await fetch(getRequestUrl(), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -315,9 +346,12 @@ const handleRequestSubmit = async () => {
     requestForm.value?.reset();
   } catch (error) {
     formMessage.value =
-      error instanceof Error
-        ? error.message
-        : "Не удалось отправить заявку. Попробуйте еще раз.";
+      error instanceof Error &&
+        /expected pattern|failed to parse url|invalid url/i.test(error.message)
+        ? "Не удалось определить адрес отправки формы. Откройте сайт через http://localhost:5173 или укажите VITE_API_BASE_URL."
+        : error instanceof Error
+          ? error.message
+          : "Не удалось отправить заявку. Попробуйте еще раз.";
   } finally {
     isSubmitting.value = false;
   }
@@ -621,6 +655,39 @@ const handleRequestSubmit = async () => {
       <div class="footer-image" aria-hidden="true"></div>
       <strong>JORWELL</strong>
     </footer>
+
+    <aside
+      v-if="cookieConsentStatus === null"
+      class="cookie-banner"
+      aria-label="Уведомление об использовании cookie"
+    >
+      <div class="cookie-banner__copy">
+        <strong>Мы используем cookie</strong>
+        <p>
+          Сайт использует технически необходимые cookie и локальные данные
+          браузера для корректной работы интерфейса.
+          <a href="/privacy.html" target="_blank" rel="noreferrer">
+            Подробнее в политике конфиденциальности
+          </a>
+        </p>
+      </div>
+      <div class="cookie-banner__actions">
+        <button
+          class="button cookie-banner__button"
+          type="button"
+          @click="setCookieConsent('accepted')"
+        >
+          Принять
+        </button>
+        <button
+          class="cookie-banner__button cookie-banner__button--secondary"
+          type="button"
+          @click="setCookieConsent('necessary')"
+        >
+          Только необходимые
+        </button>
+      </div>
+    </aside>
   </main>
 </template>
 
@@ -1834,6 +1901,69 @@ blockquote footer span {
   line-height: 0.75;
 }
 
+.cookie-banner {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  left: 24px;
+  z-index: 30;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  width: min(960px, calc(100% - 48px));
+  margin-left: auto;
+  padding: 20px 22px;
+  border: 1px solid rgba(5, 5, 5, 0.12);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 18px 54px rgba(5, 24, 43, 0.14);
+  backdrop-filter: blur(16px);
+}
+
+.cookie-banner__copy {
+  max-width: 620px;
+}
+
+.cookie-banner__copy strong {
+  display: block;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+.cookie-banner__copy p {
+  margin-top: 8px;
+  color: rgba(5, 5, 5, 0.72);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.cookie-banner__copy a {
+  text-decoration: underline;
+  text-underline-offset: 0.14em;
+}
+
+.cookie-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.cookie-banner__button {
+  cursor: pointer;
+}
+
+.cookie-banner__button--secondary {
+  min-height: 48px;
+  padding: 0 22px;
+  border: 1px solid rgba(5, 5, 5, 0.16);
+  background: transparent;
+  color: #050505;
+  font-family: "Courier New", monospace;
+  font-size: 15px;
+  line-height: 1;
+}
+
 @media (max-width: 1180px) {
   .hero-copy h1 {
     font-size: clamp(56px, 8vw, 78px);
@@ -1861,6 +1991,11 @@ blockquote footer span {
 
   .footer-band > strong {
     font-size: clamp(108px, 16vw, 174px);
+  }
+
+  .cookie-banner {
+    align-items: stretch;
+    width: min(900px, calc(100% - 48px));
   }
 }
 
@@ -2309,6 +2444,37 @@ blockquote footer span {
   .footer-band > strong {
     font-size: clamp(48px, 18vw, 74px);
     line-height: 0.86;
+  }
+
+  .cookie-banner {
+    right: 16px;
+    bottom: 16px;
+    left: 16px;
+    flex-direction: column;
+    width: calc(100% - 32px);
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .cookie-banner__copy {
+    max-width: none;
+  }
+
+  .cookie-banner__copy strong {
+    font-size: 18px;
+  }
+
+  .cookie-banner__copy p {
+    font-size: 14px;
+  }
+
+  .cookie-banner__actions {
+    width: 100%;
+  }
+
+  .cookie-banner__button,
+  .cookie-banner__button--secondary {
+    width: 100%;
   }
 }
 </style>
